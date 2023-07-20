@@ -13,9 +13,14 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -24,11 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.restaurantapp.RestaurantViewModel
 import com.example.restaurantapp.domain.Restaurant
-import com.example.restaurantapp.domain.dummyRestaurants
 
 @Composable
 fun RestaurantScreen() {
     val viewModel: RestaurantViewModel = viewModel()
+    val state =  remember { mutableStateOf("") }
+    state.value = ""
     LazyColumn(
         contentPadding = PaddingValues(
             vertical = 8.dp,
@@ -60,8 +66,9 @@ fun RestaurantItem(
             RestaurantDetails(
                 title = item.title,
                 description = item.description,
-                modifier = Modifier.weight(0.85f)
+                modifier = Modifier.weight(0.7f)
             )
+            FavoriteIcon(modifier = Modifier.weight(0.15f))
         }
     }
     
@@ -101,6 +108,15 @@ fun RestaurantDetails(
             )
         }
     }
+}
+
+@Composable
+fun FavoriteIcon(modifier: Modifier = Modifier) {
+    Image(
+        imageVector = Icons.Filled.FavoriteBorder,
+        contentDescription = "Favorite restaurant icon",
+        modifier = modifier.padding(8.dp)
+    )
 }
 
 @Preview(showBackground = true)
