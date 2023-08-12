@@ -4,13 +4,48 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.restaurantapp.domain.Restaurant
-import com.example.restaurantapp.domain.dummyRestaurants
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class RestaurantViewModel(
     private val stateHandle: SavedStateHandle
 ): ViewModel() {
+    private var restInterface: RestaurantsApiService
+    private lateinit var restaurantsCall: Call<List<Restaurant>>
+    val state = mutableStateOf(emptyList<Restaurant>())
 
-    val state = mutableStateOf(dummyRestaurants.restoreSelections())
+    init {
+        val retrofit: Retrofit = Retrofit
+            .Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://restaurantapp-285e1-default-rtdb.firebaseio.com/")
+            .build()
+        restInterface = retrofit.create(RestaurantsApiService::class.java)
+        getRestaurants()
+    }
+
+    private fun getRestaurants(){
+        restaurantsCall = restInterface.getRestaurants()
+        restaurantsCall.enqueue(
+            object : Callback<List<Restaurant>> {
+                override fun onResponse(
+                    call: Call<List<Restaurant>>,
+                    response: Response<List<Restaurant>>
+                ) {
+                    response.body()?.let { restaurants ->
+                        state.value = restaurants.restoreSelections()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            }
+        )
+    }
 
     fun toggleFavorite(id: Int) {
         val restaurants = state.value.toMutableList()
@@ -42,6 +77,11 @@ class RestaurantViewModel(
             return restaurantsMap.values.toList()
         }
         return this
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        restaurantsCall.cancel()
     }
 
     companion object {

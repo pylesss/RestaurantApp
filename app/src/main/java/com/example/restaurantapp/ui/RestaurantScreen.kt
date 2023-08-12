@@ -19,9 +19,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,7 +31,6 @@ import com.example.restaurantapp.domain.Restaurant
 
 @Composable
 fun RestaurantScreen() {
-
     val viewModel: RestaurantViewModel = viewModel()
     LazyColumn(
         contentPadding = PaddingValues(
