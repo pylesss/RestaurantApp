@@ -1,4 +1,4 @@
-package com.example.restaurantapp.coroutines
+package com.example.restaurantapp.coroutine
 
 import android.util.Log
 import kotlin.coroutines.coroutineContext

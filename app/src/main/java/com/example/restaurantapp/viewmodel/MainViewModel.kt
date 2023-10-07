@@ -1,9 +1,10 @@
-package com.example.restaurantapp.coroutines
+package com.example.restaurantapp.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.restaurantapp.coroutine.Utils
 import kotlinx.coroutines.*
 
 class MainViewModel(
@@ -36,26 +37,26 @@ class MainViewModel(
                     Utils.log(TAG, "+++++++ Created sub-coroutine for - left data +++++++")
                     loadData(useAsync, start = 0, end = 9, data = _leftData)
                     _leftData.value = DONE_LEFT_DATA
-                    Utils.log(TAG,"Sub-launch left data - done!!!")
+                    Utils.log(TAG, "Sub-launch left data - done!!!")
                 }
 
                 val job2 = launch {
                     Utils.log(TAG, "+++++++ Created sub-coroutine for - right data +++++++")
                     loadData(useAsync, start = 10, end = 19, data = _rightData)
                     _rightData.value = DONE_RIGHT_DATA
-                    Utils.log(TAG,"Sub-launch right data - done!!!")
+                    Utils.log(TAG, "Sub-launch right data - done!!!")
                 }
 
                 job1.join()
                 job2.join()
                 currentJob = null
-                Utils.log(TAG,"Launch load data1 and data2 done!!!")
+                Utils.log(TAG, "Launch load data1 and data2 done!!!")
 
             } catch (e: Exception) {
                 _leftData.value = INVALID_DATA
                 _rightData.value = INVALID_DATA
                 currentJob = null
-                Utils.log(TAG,"Coroutines failed - $e")
+                Utils.log(TAG, "Coroutines failed - $e")
             }
         }
 
@@ -78,7 +79,7 @@ class MainViewModel(
         data: MutableState<Int>
     ) {
         withContext(dispatcher) {
-            Utils.log(TAG,"Switched thread to $dispatcher")
+            Utils.log(TAG, "Switched thread to $dispatcher")
             for(index in start..end) {
 
                 if (useAsync) {

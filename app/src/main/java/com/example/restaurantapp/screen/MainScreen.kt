@@ -1,4 +1,4 @@
-package com.example.restaurantapp.coroutines
+package com.example.restaurantapp.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.restaurantapp.R
 import com.example.restaurantapp.ui.theme.RestaurantAppTheme
+import com.example.restaurantapp.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")

@@ -1,4 +1,4 @@
-package com.example.restaurantapp.ui
+package com.example.restaurantapp.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,18 +19,19 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.restaurantapp.RestaurantViewModel
 import com.example.restaurantapp.domain.Restaurant
+import com.example.restaurantapp.viewmodel.RestaurantViewModel
 
 @Composable
-fun RestaurantScreen() {
+fun RestaurantsScreen(
+    onItemClick: (id: Int) -> Unit = {}
+) {
     val viewModel: RestaurantViewModel = viewModel()
     LazyColumn(
         contentPadding = PaddingValues(
@@ -39,9 +40,15 @@ fun RestaurantScreen() {
         )
     ){
         items(viewModel.state.value) { restaurant ->
-            RestaurantItem(item = restaurant) { id ->
-                viewModel.toggleFavorite(id)
-            }
+            RestaurantItem(
+                item = restaurant,
+                onFavoriteClick = { id ->
+                    viewModel.toggleFavorite(id)
+                },
+                onItemClick = { id ->
+                    onItemClick(id)
+                }
+            )
         }
     }
 }
@@ -49,7 +56,8 @@ fun RestaurantScreen() {
 @Composable
 fun RestaurantItem(
     item: Restaurant,
-    onClick: (id: Int) -> Unit
+    onFavoriteClick: (id: Int) -> Unit,
+    onItemClick: (id: Int) -> Unit
 ) {
     val icon = if (item.isFavorite) {
         Icons.Filled.Favorite
@@ -58,7 +66,11 @@ fun RestaurantItem(
     }
     Card(
         elevation = 4.dp,
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable {
+                onItemClick(item.id)
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -77,7 +89,7 @@ fun RestaurantItem(
                 icon = icon,
                 modifier = Modifier.weight(0.15f)
             ) {
-                onClick(item.id)
+                onFavoriteClick(item.id)
             }
         }
     }
@@ -103,10 +115,12 @@ fun RestaurantIcon(
 fun RestaurantDetails(
     title: String,
     description: String,
-    modifier: Modifier
+    modifier: Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = horizontalAlignment
     ) {
         Text(
             text = title,
@@ -138,8 +152,34 @@ fun RestaurantDetails(
 //    )
 //}
 
+//@Composable
+//fun FavoriteButton(modifier: Modifier = Modifier) {
+//    var favorite by remember { mutableStateOf(false) }
+//    var color by remember { mutableStateOf(Color.Gray) }
+//
+//    color = if (favorite) {
+//        Color.Red
+//    } else {
+//        Color.Gray
+//    }
+//
+//    Image(
+//        Icons.Default.Favorite,
+//        contentDescription = null,
+//        colorFilter = ColorFilter.tint(color),
+//        modifier = modifier
+//            .size(200.dp)
+//            .clickable {
+//                favorite = true
+//                if (color == Color.Red) {
+//                    favorite = false
+//                }
+//            }
+//    )
+//}
+
 @Preview(showBackground = true)
 @Composable
 fun RestaurantPreview() {
-    RestaurantScreen()
+    RestaurantsScreen()
 }
